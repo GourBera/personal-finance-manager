@@ -6,12 +6,18 @@ from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
 from transaction.external_income_transaction import ExternalFreelanceIncome
+from transaction.transaction_command import ApplyTransactionCommand, TransactionHistory
 
 
 def main():
-    print("Adding transactions...")
-   
-    # TODO: Create balance and add observers
+    print("=" * 50)
+    print("Personal Finance Manager")
+    print("=" * 50)
+
+    # Create balance singleton and register observers
+    balance = Balance.get_instance()
+    balance.register_observer(PrintObserver())
+    balance.register_observer(LowBalanceAlertObserver(threshold=100))
 
     # Create standard transactions
     transactions = [
@@ -28,7 +34,34 @@ def main():
 
     all_transactions = transactions + [adapted_transaction]
 
-    # TODO: Apply all transactions to balance
+    # Apply all transactions using the Command pattern for undo/redo support
+    history = TransactionHistory()
+    print("\nProcessing transactions...")
+    print("-" * 50)
+    for t in all_transactions:
+        cmd = ApplyTransactionCommand(balance, t)
+        history.execute(cmd)
+
+    print("-" * 50)
+    print(f"\n{balance.summary()}")
+
+    # Demonstrate undo/redo capability (Command pattern)
+    print("\n" + "=" * 50)
+    print("Demonstrating Undo/Redo (Command Pattern)")
+    print("=" * 50)
+
+    print("\nUndoing last transaction...")
+    history.undo()
+    print(f"{balance.summary()}")
+
+    print("\nUndoing another transaction...")
+    history.undo()
+    print(f"{balance.summary()}")
+
+    print("\nRedoing last undone transaction...")
+    history.redo()
+    print(f"{balance.summary()}")
+
 
 if __name__ == "__main__":
     main()

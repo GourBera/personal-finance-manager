@@ -7,11 +7,15 @@ class Balance:
     """Singleton to track the balance."""
 
     _instance = None
+    _initialized = False
 
     def __init__(self):
         """Initialize the balance. Prevent direct instantiation."""
+        if Balance._initialized:
+            raise RuntimeError("Use Balance.get_instance() instead.")
         self._balance = 0.0
         self._observers = []
+        Balance._initialized = True
 
     @classmethod
     def get_instance(cls):
@@ -57,7 +61,9 @@ class Balance:
         elif transaction.category == TransactionCategory.EXPENSE:
             self.add_expense(transaction.amount)
         else:
-            raise ValueError(f"Invalid transaction category: {transaction.category}")
+            raise ValueError(
+                f"Invalid transaction category: {transaction.category}"
+            )
         self._notify_observers(transaction)
 
     def get_balance(self):

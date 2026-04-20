@@ -9,4 +9,8 @@ class TransactionAdapter:
 
     def to_transaction(self):
         """Convert an external transaction to a standard Transaction."""
+        required = ("amount", "invoice_id", "description")
+        missing = [field for field in required if not hasattr(self.external_transaction, field)]
+        if missing:
+            raise ValueError(f"Missing fields: {', '.join(missing)}")
         return Transaction(self.external_transaction.amount, TransactionCategory.INCOME)

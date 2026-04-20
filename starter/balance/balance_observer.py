@@ -7,7 +7,7 @@ class IBalanceObserver:
         raise NotImplementedError("Subclasses must implement update method.")
 
 
-class PrintObserver(IBalanceObserver):
+class PrintBalanceObserver(IBalanceObserver):
     def update(self, balance, transaction):
         """Print balance update message."""
         print(f"[Balance Update] {transaction} → Current Balance: ${balance:.2f}")
@@ -22,6 +22,6 @@ class LowBalanceAlertObserver(IBalanceObserver):
         """Alert if balance drops below threshold."""
         if balance < self.threshold:
             self.alert_triggered = True
-            print(f"LOW BALANCE ALERT: Balance ${balance:.2f} is below threshold ${self.threshold:.2f}!")
+            print(f"⚠ LOW BALANCE ALERT: Balance ${balance:.2f} is below threshold ${self.threshold:.2f}!")
         else:
             self.alert_triggered = False

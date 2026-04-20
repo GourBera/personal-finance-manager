@@ -30,6 +30,7 @@ class ApplyTransactionCommand(ICommand):
 
     def undo(self):
         """Reverse the transaction by applying the opposite operation."""
+        # Undo by applying the inverse transaction category.
         if self.transaction.category == TransactionCategory.INCOME:
             reverse = Transaction(self.transaction.amount, TransactionCategory.EXPENSE)
         else:

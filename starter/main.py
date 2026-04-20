@@ -1,7 +1,7 @@
 """This module serves as the entry point for the program."""
 from balance.balance import Balance
 from balance.balance_observer import LowBalanceAlertObserver
-from balance.balance_observer import PrintObserver
+from balance.balance_observer import PrintBalanceObserver
 from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
@@ -16,7 +16,7 @@ def main():
 
     # Create balance singleton and register observers
     balance = Balance.get_instance()
-    balance.register_observer(PrintObserver())
+    balance.register_observer(PrintBalanceObserver())
     balance.register_observer(LowBalanceAlertObserver(threshold=100))
 
     # Create standard transactions
@@ -44,6 +44,9 @@ def main():
 
     print("-" * 50)
     print(f"\n{balance.summary()}")
+
+    print("\nBalance before undo/redo:")
+    print(balance.summary())
 
     # Demonstrate undo/redo capability (Command pattern)
     print("\n" + "=" * 50)
